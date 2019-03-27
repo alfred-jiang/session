@@ -438,6 +438,11 @@ function session(options) {
 
     // determine if cookie should be set on response
     function shouldSetCookie(req) {
+      // fork updated begin
+      if (req.sessionIdWithoutSecret) {
+        return false;
+      }
+      // fork updated end
       // cannot set cookie without a session ID
       if (typeof req.sessionID !== 'string') {
         return false;
@@ -511,6 +516,11 @@ function generateSessionId(sess) {
  */
 
 function getcookie(req, name, secrets) {
+  // fork updated begin
+  if (req.sessionIdWithoutSecret) {
+    return req.sessionIdWithoutSecret;
+  }
+  // fork updated end
   var header = req.headers.cookie;
   var raw;
   var val;
