@@ -156,7 +156,15 @@ function session(options) {
 
   // generates the new session
   store.generate = function(req){
-    req.sessionID = generateId(req);
+    // fork updated begin
+    // removed: req.sessionID = generateId(req);
+    if (req.sessionIdWithoutSecret) {
+      req.sessionID = req.sessionIdWithoutSecret;
+    }
+    else {
+      req.sessionID = generateId(req);
+    }
+    // fork updated end
     req.session = new Session(req);
     req.session.cookie = new Cookie(cookieOptions);
 
@@ -438,11 +446,11 @@ function session(options) {
 
     // determine if cookie should be set on response
     function shouldSetCookie(req) {
-      // fork updated begin
+      // fork added begin
       if (req.sessionIdWithoutSecret) {
         return false;
       }
-      // fork updated end
+      // fork added end
       // cannot set cookie without a session ID
       if (typeof req.sessionID !== 'string') {
         return false;
